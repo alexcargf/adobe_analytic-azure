@@ -1,0 +1,101 @@
+{
+    "name": "oas_take_up",
+    "properties": {
+        "activities": [
+            {
+                "name": "Ingest OAS Take Up Data",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "Set End Date",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Nov 29 - MVP/Ingestion/Adobe Analytics/OAS Take Up",
+                    "baseParameters": {
+                        "segments": {
+                            "value": "@pipeline().parameters.segments",
+                            "type": "Expression"
+                        },
+                        "dimensions": {
+                            "value": "@pipeline().parameters.dimensions",
+                            "type": "Expression"
+                        },
+                        "metrics": {
+                            "value": "@pipeline().parameters.metrics",
+                            "type": "Expression"
+                        },
+                        "start_date": {
+                            "value": "@pipeline().parameters.start_date",
+                            "type": "Expression"
+                        },
+                        "end_date": {
+                            "value": "@variables('end_date')",
+                            "type": "Expression"
+                        },
+                        "output_file_path": {
+                            "value": "@pipeline().parameters.output_file_path",
+                            "type": "Expression"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "dbw_saeb_dev_01",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Set End Date",
+                "type": "SetVariable",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "end_date",
+                    "value": {
+                        "value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'), 'yyyy-MM-dd')",
+                        "type": "Expression"
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "segments": {
+                "type": "string"
+            },
+            "dimensions": {
+                "type": "string"
+            },
+            "metrics": {
+                "type": "string"
+            },
+            "start_date": {
+                "type": "string"
+            },
+            "output_file_path": {
+                "type": "string"
+            }
+        },
+        "variables": {
+            "end_date": {
+                "type": "String"
+            }
+        },
+        "folder": {
+            "name": "1. Ingest/Adobe Analytics"
+        },
+        "annotations": [],
+        "lastPublishTime": "2021-12-15T17:42:45Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

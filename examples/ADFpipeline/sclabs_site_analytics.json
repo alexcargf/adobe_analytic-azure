@@ -1,0 +1,93 @@
+{
+    "name": "sclabs_site_analytics",
+    "properties": {
+        "activities": [
+            {
+                "name": "Ingest SCLabs Site Analytics Data",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "Set Output File Path",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Nov 29 - MVP/Ingestion/Adobe Analytics/AA Ingestion Script",
+                    "baseParameters": {
+                        "dimensions": {
+                            "value": "@pipeline().parameters.dimensions",
+                            "type": "Expression"
+                        },
+                        "metrics": {
+                            "value": "@pipeline().parameters.metrics",
+                            "type": "Expression"
+                        },
+                        "segments": {
+                            "value": "@pipeline().parameters.segments",
+                            "type": "Expression"
+                        },
+                        "output_file_path": {
+                            "value": "@variables('output_file_path')",
+                            "type": "Expression"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "dbw_saeb_dev_01",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Set Output File Path",
+                "type": "SetVariable",
+                "dependsOn": [],
+                "userProperties": [],
+                "typeProperties": {
+                    "variableName": "output_file_path",
+                    "value": {
+                        "value": "@concat(pipeline().parameters.output_directory, pipeline().parameters.output_filename, formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'yyyyMM'), '.csv')",
+                        "type": "Expression"
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "segments": {
+                "type": "string"
+            },
+            "dimensions": {
+                "type": "string"
+            },
+            "metrics": {
+                "type": "string"
+            },
+            "output_directory": {
+                "type": "string"
+            },
+            "output_filename": {
+                "type": "string"
+            }
+        },
+        "variables": {
+            "output_file_path": {
+                "type": "String"
+            }
+        },
+        "folder": {
+            "name": "1. Ingest/Adobe Analytics"
+        },
+        "annotations": [],
+        "lastPublishTime": "2021-12-15T17:42:45Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
