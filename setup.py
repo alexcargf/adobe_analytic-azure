@@ -10,6 +10,8 @@ setuptools.setup(
     author='AlexZ',
     author_email='alexdataanalyst@gmail.com',
     description='Automate Adobe Analytics Reports API v2 requests to export to Azure Blob Storage programmatically.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/alexcargf/adobe_analytic-azure',
     download_url = 'https://github.com/alexcargf/adobe_analytic-azure/archive/refs/tags/0.0.2.tar.gz',    
     package_dir={'': 'src'},
